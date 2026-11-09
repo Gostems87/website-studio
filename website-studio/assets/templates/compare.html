@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Compare the design directions</title>
+<!--
+  Website Studio: the side-by-side viewer for Stage 2.
+  Copy into mockups/index.html and edit DIRECTIONS below. Each file sits in the
+  same folder. Opens by double-click; needs no server.
+-->
+<style>
+  :root { --bg:#1c1b19; --bar:#262522; --line:#3b3934; --text:#ece9e2; --soft:#aca79b; --mark:#f0c64a; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; margin:0; }
+  body { display:flex; flex-direction:column; background:var(--bg); color:var(--text); font:15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px; padding:10px 16px; background:var(--bar); border-bottom:1px solid var(--line); }
+  .group { display:flex; gap:4px; }
+  button { font:inherit; min-height:44px; padding:0 14px; color:var(--soft); background:transparent; border:1px solid var(--line); cursor:pointer; }
+  button[aria-pressed="true"] { color:#1c1b19; background:var(--mark); border-color:var(--mark); }
+  button:focus-visible { outline:2px solid var(--text); outline-offset:2px; }
+  #note { flex:1 1 280px; margin:0; color:var(--soft); }
+  main { flex:1; display:flex; justify-content:center; min-height:0; padding:12px; }
+  iframe { width:100%; height:100%; border:0; background:#fff; }
+  body.phone iframe { width:390px; max-width:100%; }
+</style>
+</head>
+<body>
+<header>
+  <div class="group" id="directions" role="group" aria-label="Design direction"></div>
+  <div class="group" role="group" aria-label="Screen size">
+    <button type="button" id="desktop" aria-pressed="true">Desktop</button>
+    <button type="button" id="phone" aria-pressed="false">Phone</button>
+  </div>
+  <p id="note"></p>
+</header>
+<main><iframe id="frame" title="Design direction preview"></iframe></main>
+<script>
+  // Edit this list. One entry for each direction, with a one-line idea in plain English.
+  const DIRECTIONS = [
+    { label: 'A', file: 'direction-a.html', note: 'One line on the idea behind A.' },
+    { label: 'B', file: 'direction-b.html', note: 'One line on the idea behind B.' },
+    { label: 'C', file: 'direction-c.html', note: 'One line on the idea behind C.' },
+  ];
+
+  const frame = document.getElementById('frame');
+  const note = document.getElementById('note');
+  const holder = document.getElementById('directions');
+  const buttons = DIRECTIONS.map((d) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = 'Direction ' + d.label;
+    b.addEventListener('click', () => show(d, b));
+    holder.appendChild(b);
+    return b;
+  });
+  function show(d, b) {
+    frame.src = d.file;
+    note.textContent = d.note;
+    buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }
+  function size(isPhone) {
+    document.body.classList.toggle('phone', isPhone);
+    document.getElementById('phone').setAttribute('aria-pressed', String(isPhone));
+    document.getElementById('desktop').setAttribute('aria-pressed', String(!isPhone));
+  }
+  document.getElementById('desktop').addEventListener('click', () => size(false));
+  document.getElementById('phone').addEventListener('click', () => size(true));
+  show(DIRECTIONS[0], buttons[0]);
+</script>
+</body>
+</html>

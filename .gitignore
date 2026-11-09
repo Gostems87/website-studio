@@ -1,0 +1,10 @@
+# Inspector output and local clutter
+qa/
+.env
+.env.*
+!.env.example
+.vercel/
+node_modules/
+.vscode/
+Thumbs.db
+desktop.ini

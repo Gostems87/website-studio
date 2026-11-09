@@ -1,0 +1,43 @@
+<!--
+  Website Studio visit counter with an opt-out, using Cloudflare Web Analytics.
+
+  1. Paste the first script into every page, before </body>. Replace SITE-TOKEN with
+     the value from Cloudflare's Web Analytics page. It's public by design.
+  2. Paste the paragraph and the second script into the privacy notice.
+  3. Explain the counter in the privacy notice: what it counts, who runs it, and that
+     it can be switched off here.
+
+  The choice is saved only in the visitor's own browser.
+-->
+<script>
+(() => {
+  try { if (localStorage.getItem('no-visit-counting') === '1') return; } catch { /* storage blocked: carry on */ }
+  const counter = document.createElement('script');
+  counter.defer = true;
+  counter.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  counter.setAttribute('data-cf-beacon', JSON.stringify({ token: 'SITE-TOKEN' }));
+  document.head.appendChild(counter);
+})();
+</script>
+
+<!-- For the privacy notice page only -->
+<p><button type="button" id="visit-counting"></button> <span id="visit-counting-state" role="status"></span></p>
+<script>
+(() => {
+  const button = document.getElementById('visit-counting');
+  const state = document.getElementById('visit-counting-state');
+  const isOff = () => { try { return localStorage.getItem('no-visit-counting') === '1'; } catch { return false; } };
+  const show = () => {
+    button.textContent = isOff() ? 'Count my visits again' : 'Stop counting my visits';
+    state.textContent = isOff() ? 'Your visits are not being counted.' : 'Your visits are being counted anonymously.';
+  };
+  button.addEventListener('click', () => {
+    try {
+      if (isOff()) localStorage.removeItem('no-visit-counting');
+      else localStorage.setItem('no-visit-counting', '1');
+    } catch { state.textContent = 'Your browser blocked that setting.'; return; }
+    show();
+  });
+  show();
+})();
+</script>
